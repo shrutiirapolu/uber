@@ -202,42 +202,9 @@ This document focuses on the **login logic** implemented in the user authenticat
 
 ---
 
-## Key Code Snippets
-
-### Controller Logic
-
-```javascript
-const { validationResult } = require("express-validator");
-const userModel = require("../models/user.model");
-
-module.exports.loginUser = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { email, password } = req.body;
-  const user = await userModel.findOne({ email }).select("+password");
-
-  if (!user) {
-    return res.status(401).json({ message: "Invalid email or password" });
-  }
-
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    return res.status(401).json({ message: "Invalid email or password" });
-  }
-
-  const token = user.generateAuthToken();
-  res.status(200).json({ token, user });
-};
 ```
 
-### Route Configuration
 
-```javascript
-
-```
 
 ## Key Files Overview
 
@@ -292,3 +259,4 @@ module.exports.loginUser = async (req, res, next) => {
 ## License
 
 This project is open-source and available under the MIT License.
+```
