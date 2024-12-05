@@ -144,6 +144,52 @@ backend/
 
 ---
 
+##USER LOGIN
+Endpoint: POST /users/login
+
+Description: The login endpoint allows users to authenticate by providing their email and password. If the credentials are correct, a JWT (JSON Web Token) is generated and returned, which can be used for subsequent authenticated API requests.
+
+Request Body:
+{
+"email": "john.doe@example.com",
+"password": "password123"
+}
+
+email: The email address of the user. This should be a valid email format and match the email stored in the database.
+password: The password associated with the user's email. The password must be at least 6 characters long.
+Validation Rules:
+Email:
+Must be a valid email address.
+Example validation message: "Invalid Email".
+Password:
+Must be at least 6 characters long.
+Example validation message: "Password must be at least 6 characters long".
+Process:
+Email Validation: The system first validates that the email provided is in the correct format.
+User Lookup: The system checks the database for a user with the provided email. If the user is not found, it responds with an error message.
+Password Comparison: If the user is found, the system compares the provided password with the hashed password stored in the database using bcrypt. If the password does not match, an error message is returned.
+JWT Token Generation: If both the email and password are valid, a JWT token is generated using the jsonwebtoken library. The token is signed with a secret key (usually stored in environment variables). This token will be returned to the user and can be used for future authentication.
+Response:
+Success: HTTP 200 OK, with a response body that includes the user's details and an authentication token.
+{
+"token": "<token>",
+"user": {
+"fullname": {
+"firstname": "shruti"
+},
+"\_id": "6751e1c7864d07d261c648b6",
+"email": "shruti@gmail.com",
+"password": "$2b$10$k3sNcpV2hEiiDGSLH9o0n.9z1eiOovuJ0zz37yTot2UpiYMxSCGwe",
+"\_\_v": 0
+}
+}
+token: A secure JWT token which can be used in the Authorization header for subsequent API requests (e.g., Authorization: Bearer <JWT Token>).
+user: Contains the user's details, including the unique \_id, full name, and email.
+Error: HTTP 400 Bad Request if validation fails or the credentials are incorrect. The response will include a detailed error message.
+{
+"message": "invalid email or password"
+}
+
 ## Key Files Overview
 
 1. **`controllers/user.controller.js`**:
